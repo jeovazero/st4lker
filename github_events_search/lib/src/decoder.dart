@@ -6,7 +6,7 @@ import 'events/push.dart';
 import 'events/pull_request.dart';
 
 List<GithubEvent> decodeEvents(dynamic json) {
-  final List<GithubEvent> list = [];
+  final list = <GithubEvent>[];
 
   if (json is List) {
     for (var el in json) {

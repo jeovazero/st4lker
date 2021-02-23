@@ -11,7 +11,7 @@ class Issue {
 
 class IssuesEventPayload {
   final String action;
-  final Issue? issue;
+  final Issue issue;
 
   IssuesEventPayload(this.action, this.issue);
 

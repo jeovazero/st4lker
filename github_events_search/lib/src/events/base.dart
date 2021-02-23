@@ -58,10 +58,10 @@ class Actor {
 class GithubEvent<P> {
   final String id;
   final GithubEventType type;
-  final Repo? repo;
-  final P? payload;
+  final Repo repo;
+  final P payload;
   final DateTime created_at;
-  final Actor? actor;
+  final Actor actor;
 
   GithubEvent.fromJson(Map<String, dynamic> json, F<P> payloadDecoder)
       : id = fromMaybeString('', json['id']),

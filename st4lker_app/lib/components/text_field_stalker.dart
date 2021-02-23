@@ -4,16 +4,16 @@ import 'package:flutter/widgets.dart';
 import 'colors.dart';
 
 class TextFieldStalker extends StatelessWidget {
-  final TextEditingController controller;
+  final Function(String) onChanged;
 
-  TextFieldStalker({ this.controller });
+  TextFieldStalker({ this.onChanged });
 
   @override
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(20),
       child: TextField(
-        controller: controller,
+        onChanged: onChanged,
         textAlign: TextAlign.left,
         autocorrect: false,
         style: TextStyle(color: Colors.white, fontFamily: 'Tuffy'),

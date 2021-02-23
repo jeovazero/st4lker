@@ -4,6 +4,12 @@ import 'package:flutter/widgets.dart';
 import 'colors.dart';
 
 class Event extends StatelessWidget {
+  final String action;
+  final String date;
+  final String repository;
+
+  Event({ this.action, this.repository, this.date });
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -20,7 +26,7 @@ class Event extends StatelessWidget {
             textDirection: TextDirection.ltr,
             children: [
               Text(
-                '12 / Feb',
+                date,
                 style: TextStyle(
                   color: secondary,
                   fontSize: 18,
@@ -28,7 +34,7 @@ class Event extends StatelessWidget {
                 ),
               ),
               Text(
-                'Created the repository',
+                action,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -36,7 +42,7 @@ class Event extends StatelessWidget {
                 ),
               ),
               Text(
-                '> jeovazero/st4lker',
+                '> ${repository}',
                 style: TextStyle(
                   color: secondary,
                   fontSize: 18,

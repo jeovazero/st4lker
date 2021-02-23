@@ -15,7 +15,7 @@ class Loading extends StatelessWidget {
       Dot(offset: 0.5),
       Dot(offset: 0.25),
       Dot(offset: 0)
-    ]);
+    ], mainAxisSize: MainAxisSize.min,);
   }
 }
 

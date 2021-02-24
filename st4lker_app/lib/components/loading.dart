@@ -81,7 +81,7 @@ class _Dot extends State<Dot> {
           child: Container(
             width: lerpValue,
             height: lerpValue,
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
               color: Color.lerp(secondary, grad2, t),
               shape: BoxShape.circle,
             ),

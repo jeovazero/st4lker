@@ -1,10 +1,20 @@
 import 'dart:convert' as c;
 import 'dart:io' as io;
+
 import 'package:meta/meta.dart';
 
 import 'helpers.dart';
 
-class GithubUser {
+class IGithubUser {}
+
+class GithubNoUser implements IGithubUser {
+  @override
+  String toString() {
+    return 'GithubNoUser {}';
+  }
+}
+
+class GithubUser implements IGithubUser {
   final String login;
   final int id;
   final String avatar_url;
@@ -38,16 +48,22 @@ class GithubUser {
   }
 }
 
-Future<GithubUser> getGithubUser({@required String user}) async {
+Future<IGithubUser> getGithubUser({@required String user}) async {
   var apiUserURI = Uri.https('api.github.com', '/users/${user}');
 
   var request = await io.HttpClient().getUrl(apiUserURI);
   var response = await request.close();
-  var textResponse = await response.transform(c.utf8.decoder).join();
-
-  dynamic json = c.json.decode(textResponse);
-  if (json is Map<String, dynamic>) {
-    return Future.value(GithubUser.fromJson(json));
+  if (response.statusCode == 404) {
+    return Future.value(GithubNoUser());
   }
+  if (response.statusCode == 200) {
+    var textResponse = await response.transform(c.utf8.decoder).join();
+
+    dynamic json = c.json.decode(textResponse);
+    if (json is Map<String, dynamic>) {
+      return Future.value(GithubUser.fromJson(json));
+    }
+  }
+
   return Future.error(Exception('JSON malformed'));
 }

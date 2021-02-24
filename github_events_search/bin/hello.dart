@@ -6,4 +6,6 @@ Future main(List<String> trash) async {
   print(events);
   var user = await getGithubUser(user: 'jeovazero');
   print(user);
+  var noUser = await getGithubUser(user: 'zwrwef');
+  print(noUser);
 }

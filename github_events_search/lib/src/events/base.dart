@@ -1,4 +1,4 @@
-import '../events_type.dart';
+import '../event_types.dart';
 import '../helpers.dart';
 
 class Repo {

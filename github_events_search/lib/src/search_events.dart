@@ -3,7 +3,7 @@ import 'dart:io' as io;
 // remove it when dart >= 2.12.0
 import 'package:meta/meta.dart';
 
-import 'decoder.dart';
+import 'event_decoder.dart';
 import 'events/base.dart';
 
 Future<List<GithubEvent>> searchEventsByUSer({ @required String user ,

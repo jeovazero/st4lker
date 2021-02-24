@@ -4,7 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:github_events_search/github_events_search.dart';
-import 'package:st4lker/components/loading.dart';
+import 'package:st4lker/components/status.dart';
+import 'package:st4lker/components/user_card.dart';
 import 'package:st4lker/event_from_github.dart';
 
 import 'components/colors.dart';
@@ -44,24 +45,40 @@ class Body extends StatefulWidget {
 
 class _Body extends State<Body> {
   Timer _debounce;
-  String _text = '';
   List<GithubEvent> _events = [];
-  bool _loading = false;
+  AppStatus _appStatus = AppStatus.Nothing;
+  GithubUser _user;
 
   _onChange(String text) {
     if (_debounce?.isActive ?? false) _debounce.cancel();
     setState(() {
-      _text = '';
-      _loading = true;
+      _user = null;
+      _appStatus = text.isNotEmpty ? AppStatus.Loading : AppStatus.Nothing;
       _events = [];
     });
+
+    if (text.isEmpty) return;
+
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
-      final events = await searchEventsByUSer(user: text, per_page: 5);
-      setState(() {
-        _text = text;
-        _events = events;
-        _loading = false;
-      });
+      try {
+        final user = await getGithubUser(user: text);
+        if (user is GithubNoUser) {
+          setState(() {
+            _appStatus = AppStatus.UserNotFound;
+          });
+          return;
+        }
+        final events = await searchEventsByUSer(user: text, per_page: 5);
+        setState(() {
+          _user = user;
+          _events = events;
+          _appStatus = AppStatus.UserFound;
+        });
+      } catch (err) {
+        setState(() {
+          _appStatus = AppStatus.Error;
+        });
+      }
     });
   }
 
@@ -86,28 +103,30 @@ class _Body extends State<Body> {
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
               children: <Widget>[
-                if (_loading)
+                if (_appStatus != AppStatus.UserFound)
                   Container(
-                    child: Loading(),
+                    child: Status(status: _appStatus),
                     alignment: Alignment.center,
-                    padding: EdgeInsets.all(50),
+                    padding: EdgeInsets.all(24),
                   ),
-                Container(
-                  width: double.infinity,
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 24, top: 24, bottom: 24),
-                    child: Text(
-                      _text,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        fontFamily: 'Tuffy',
+                if (_user != null) UserCard(_user),
+                if (_user != null)
+                  Container(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 24, top: 24, bottom: 24),
+                      child: Text(
+                        'Activities',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          fontFamily: 'Tuffy',
+                        ),
                       ),
                     ),
                   ),
-                ),
                 for (var item in _events) event_from_github(item)
               ],
             ),

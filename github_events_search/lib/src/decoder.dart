@@ -4,6 +4,7 @@ import 'events/issue.dart';
 import 'events/watch.dart';
 import 'events/push.dart';
 import 'events/pull_request.dart';
+import 'helpers.dart';
 
 List<GithubEvent> decodeEvents(dynamic json) {
   final list = <GithubEvent>[];

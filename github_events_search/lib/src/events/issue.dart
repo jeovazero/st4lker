@@ -1,4 +1,5 @@
 import 'base.dart';
+import '../helpers.dart';
 
 class Issue {
   final String title;

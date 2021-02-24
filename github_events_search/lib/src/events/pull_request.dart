@@ -1,4 +1,5 @@
 import 'base.dart';
+import '../helpers.dart';
 
 class PullRequestPayload {
   final String action;

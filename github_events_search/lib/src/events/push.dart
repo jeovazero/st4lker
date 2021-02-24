@@ -1,4 +1,5 @@
 import 'base.dart';
+import '../helpers.dart';
 
 class PushEvent extends GithubEvent<PushEventPayload> {
   PushEvent.fromJson(Map<String, dynamic> json)

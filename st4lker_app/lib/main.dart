@@ -61,19 +61,25 @@ class _Body extends State<Body> {
 
     _debounce = Timer(const Duration(milliseconds: 1000), () async {
       try {
-        final user = await getGithubUser(user: text);
-        if (user is GithubNoUser) {
+        final githubUserResponse = await getGithubUser(user: text);
+        if (githubUserResponse.status == ResponseStatus.NotFound) {
           setState(() {
             _appStatus = AppStatus.UserNotFound;
           });
           return;
         }
-        final events = await searchEventsByUSer(user: text, per_page: 5);
-        setState(() {
-          _user = user;
-          _events = events;
-          _appStatus = AppStatus.UserFound;
-        });
+        final eventsResponse = await searchEventsByUSer(user: text, per_page: 5);
+        if (eventsResponse.status == ResponseStatus.Ok) {
+          setState(() {
+            _user = githubUserResponse.user;
+            _events = eventsResponse.events;
+            _appStatus = AppStatus.UserFound;
+          });
+        } else if (eventsResponse.status == ResponseStatus.Forbidden) {
+          setState(() {
+            _appStatus = AppStatus.Forbidden;
+          });
+        }
       } catch (err) {
         setState(() {
           _appStatus = AppStatus.Error;

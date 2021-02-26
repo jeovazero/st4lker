@@ -3,18 +3,10 @@ import 'dart:io' as io;
 
 import 'package:meta/meta.dart';
 
+import 'event_types.dart';
 import 'helpers.dart';
 
-class IGithubUser {}
-
-class GithubNoUser implements IGithubUser {
-  @override
-  String toString() {
-    return 'GithubNoUser {}';
-  }
-}
-
-class GithubUser implements IGithubUser {
+class GithubUser {
   final String login;
   final int id;
   final String avatar_url;
@@ -48,22 +40,48 @@ class GithubUser implements IGithubUser {
   }
 }
 
-Future<IGithubUser> getGithubUser({@required String user}) async {
+class GithubUserResponse {
+  final int rateLimitRemaining;
+  final GithubUser user;
+  final ResponseStatus status;
+
+  GithubUserResponse({this.rateLimitRemaining, this.user, this.status});
+
+  @override
+  String toString() {
+    return 'GithubUserResponse {\n  '
+        'rateLimitRemaining = ${rateLimitRemaining},\n  '
+        'status = ${status},\n  '
+        'user = ${user}\n}';
+  }
+}
+
+Future<GithubUserResponse> getGithubUser({@required String user}) async {
   var apiUserURI = Uri.https('api.github.com', '/users/${user}');
 
   var request = await io.HttpClient().getUrl(apiUserURI);
   var response = await request.close();
-  if (response.statusCode == 404) {
-    return Future.value(GithubNoUser());
-  }
-  if (response.statusCode == 200) {
+  var rateLimitRemaining = response.headers.value('x-ratelimit-remaining');
+  GithubUser _user;
+
+  var status = statusFromCode(response.statusCode);
+
+  if (status == ResponseStatus.Ok) {
     var textResponse = await response.transform(c.utf8.decoder).join();
 
     dynamic json = c.json.decode(textResponse);
     if (json is Map<String, dynamic>) {
-      return Future.value(GithubUser.fromJson(json));
+      _user = GithubUser.fromJson(json);
+    } else {
+      return Future.error(Exception('JSON malformed'));
     }
   }
 
-  return Future.error(Exception('JSON malformed'));
+  return Future.value(
+    GithubUserResponse(
+      rateLimitRemaining: int.parse(rateLimitRemaining, radix: 10),
+      status: statusFromCode(response.statusCode),
+      user: _user, // nullable
+    ),
+  );
 }

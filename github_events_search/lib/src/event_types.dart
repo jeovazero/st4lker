@@ -23,3 +23,5 @@ GithubEventType fromMaybeEvent(String type) {
       return GithubEventType.UnknownEvent;
   }
 }
+
+enum ResponseStatus { Ok, NotFound, Unknown, Forbidden }

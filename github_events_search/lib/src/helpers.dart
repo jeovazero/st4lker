@@ -1,3 +1,5 @@
+import 'event_types.dart';
+
 String fromMaybeString(String _default, dynamic d) =>
     d is String ? d : _default;
 
@@ -14,4 +16,17 @@ T transformFromRecord<T>(T _default, F<T> f, dynamic json) {
     return f(json);
   }
   return _default;
+}
+
+ResponseStatus statusFromCode(int code) {
+  switch (code) {
+    case 200:
+      return ResponseStatus.Ok;
+    case 404:
+      return ResponseStatus.NotFound;
+    case 403:
+      return ResponseStatus.Forbidden;
+    default:
+      return ResponseStatus.Unknown;
+  }
 }

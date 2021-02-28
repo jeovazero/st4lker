@@ -1,14 +1,16 @@
+import 'package:flutter/widgets.dart';
 import 'package:github_events_search/github_events_search.dart';
 import 'package:intl/intl.dart';
 import 'package:st4lker/components/event.dart';
 
-String capitalize(String text) => '${text[0].toUpperCase()}${text.substring(1)}';
+String capitalize(String text) =>
+    '${text[0].toUpperCase()}${text.substring(1)}';
 
-Event eventFromGithub(GithubEvent ghEvent) {
+Widget eventFromGithub(GithubEvent ghEvent) {
   final repository = ghEvent.repo.name;
   var action;
   var date = DateFormat.MMMd().format(ghEvent.created_at);
-  
+
   if (ghEvent is PushEvent) {
     var size = ghEvent.payload.size;
     action = 'Pushed $size commit${size > 1 ? 's' : ''}';
@@ -25,9 +27,18 @@ Event eventFromGithub(GithubEvent ghEvent) {
   } else if (ghEvent is ForkEvent) {
     var repoName = ghEvent.payload.forkee.name;
     action = 'Forked $repoName from';
+  } else if (ghEvent is PublicEvent) {
+    action = 'Made public the repository';
   } else {
     assert(false, 'Something wrong, little coder');
   }
 
-  return Event(action: action, date: date, repository: repository,);
+  return Padding(
+    child: Event(
+      action: action,
+      date: date,
+      repository: repository,
+    ),
+    padding: EdgeInsets.only(top: 0, bottom: 20),
+  );
 }

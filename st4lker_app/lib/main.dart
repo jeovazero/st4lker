@@ -133,7 +133,7 @@ class _Body extends State<Body> {
                       ),
                     ),
                   ),
-                for (var item in _events) event_from_github(item)
+                for (var item in _events) eventFromGithub(item)
               ],
             ),
           ),

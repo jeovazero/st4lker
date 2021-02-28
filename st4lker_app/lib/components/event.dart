@@ -16,7 +16,7 @@ class Event extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         border: Border(
-          left: BorderSide(color: secondary, width: 4),
+          left: BorderSide(color: secondaryDarkest, width: 4),
         ),
       ),
       child: Padding(

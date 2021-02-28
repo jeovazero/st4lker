@@ -1,16 +1,17 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:github_events_search/github_events_search.dart';
-import 'package:st4lker/components/status.dart';
-import 'package:st4lker/components/user_card.dart';
-import 'package:st4lker/event_from_github.dart';
 
 import 'components/colors.dart';
 import 'components/header.dart';
+import 'components/status.dart';
 import 'components/text_field_stalker.dart';
+import 'components/user_sliver.dart';
+import 'event_from_github.dart';
 
 void main() {
   runApp(MyApp());
@@ -68,7 +69,10 @@ class _Body extends State<Body> {
           });
           return;
         }
-        final eventsResponse = await searchEventsByUSer(user: text, per_page: 5);
+        final eventsResponse = await searchEventsByUSer(
+          user: text,
+          per_page: 100,
+        );
         if (eventsResponse.status == ResponseStatus.Ok) {
           setState(() {
             _user = githubUserResponse.user;
@@ -105,38 +109,44 @@ class _Body extends State<Body> {
             onChanged: _onChange,
           ),
           Expanded(
-            child: ListView(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              children: <Widget>[
-                if (_appStatus != AppStatus.UserFound)
-                  Container(
-                    child: Status(status: _appStatus),
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.all(24),
-                  ),
-                if (_user != null) UserCard(_user),
-                if (_user != null)
-                  Container(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: EdgeInsets.only(left: 24, top: 24, bottom: 24),
-                      child: Text(
-                        'Activities',
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          fontFamily: 'Tuffy',
+              child: _appStatus != AppStatus.UserFound
+                  ? Container(
+                      child: Status(status: _appStatus),
+                      alignment: Alignment.topCenter,
+                      padding: EdgeInsets.all(24),
+                    )
+                  : CustomScrollView(
+                      scrollDirection: Axis.vertical,
+                      slivers: [
+                        SliverPersistentHeader(
+                          pinned: true,
+                          delegate: UserSliver(_user),
                         ),
-                      ),
-                    ),
-                  ),
-                for (var item in _events) eventFromGithub(item)
-              ],
-            ),
-          ),
+                        SliverList(
+                          delegate: SliverChildListDelegate(<Widget>[
+                            if (_user != null)
+                              Container(
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 24, top: 24, bottom: 24),
+                                  child: Text(
+                                    'Activities',
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                      fontFamily: 'Tuffy',
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            for (var item in _events) eventFromGithub(item)
+                          ]),
+                        )
+                      ],
+                    )),
         ],
       ),
     );

@@ -52,7 +52,7 @@ class GithubUserResponse {
     return 'GithubUserResponse {\n  '
         'rateLimitRemaining = ${rateLimitRemaining},\n  '
         'status = ${status},\n  '
-        'user = ${user}\n}';
+        'user = ${user} }';
   }
 }
 

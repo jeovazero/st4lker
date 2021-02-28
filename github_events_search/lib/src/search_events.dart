@@ -53,7 +53,7 @@ Future<GithubEventsResponse> searchEventsByUSer({
   var link = response.headers.value('link');
   // https://docs.github.com/en/rest/overview/resources-in-the-rest-api#pagination
   var hasNext =
-      link.split(',').map((e) => e.indexOf('rel="next"')).any((n) => n > 0);
+      link?.split(',')?.map((e) => e.indexOf('rel="next"'))?.any((n) => n > 0);
 
   var rateLimitRemaining = response.headers.value('x-ratelimit-remaining');
   var textResponse = await response.transform(c.utf8.decoder).join();
@@ -62,7 +62,7 @@ Future<GithubEventsResponse> searchEventsByUSer({
   return Future.value(
     GithubEventsResponse(
       status: status,
-      hasNext: hasNext,
+      hasNext: hasNext ?? false,
       events: decodeEvents(json),
       rateLimitRemaining: int.parse(rateLimitRemaining, radix: 10),
     ),

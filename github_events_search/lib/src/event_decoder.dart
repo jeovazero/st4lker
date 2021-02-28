@@ -25,6 +25,9 @@ List<GithubEvent> decodeEvents(dynamic json) {
           case GithubEventType.PublicEvent:
             list.add(PublicEvent.fromJson(item));
             break;
+          case GithubEventType.CreateEvent:
+            list.add(CreateEvent.fromJson(item));
+            break;
         }
       }
     }

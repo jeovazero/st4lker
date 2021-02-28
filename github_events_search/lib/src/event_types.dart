@@ -5,6 +5,7 @@ enum GithubEventType {
   PushEvent,
   PublicEvent,
   CreateEvent,
+  ForkEvent,
   UnknownEvent
 }
 
@@ -22,6 +23,8 @@ GithubEventType fromMaybeEvent(String type) {
       return GithubEventType.PublicEvent;
     case 'CreateEvent':
       return GithubEventType.CreateEvent;
+    case 'ForkEvent':
+      return GithubEventType.ForkEvent;
     default:
       return GithubEventType.UnknownEvent;
   }

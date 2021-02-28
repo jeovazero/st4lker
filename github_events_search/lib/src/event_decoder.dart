@@ -28,6 +28,9 @@ List<GithubEvent> decodeEvents(dynamic json) {
           case GithubEventType.CreateEvent:
             list.add(CreateEvent.fromJson(item));
             break;
+          case GithubEventType.ForkEvent:
+            list.add(ForkEvent.fromJson(item));
+            break;
         }
       }
     }

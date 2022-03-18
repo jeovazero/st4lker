@@ -60,7 +60,7 @@ class _Body extends State<Body> {
 
     if (text.isEmpty) return;
 
-    _debounce = Timer(const Duration(milliseconds: 1000), () async {
+    _debounce = Timer(const Duration(seconds: 1), () async {
       try {
         final githubUserResponse = await getGithubUser(user: text);
         if (githubUserResponse.status == ResponseStatus.NotFound) {
@@ -109,44 +109,48 @@ class _Body extends State<Body> {
             onChanged: _onChange,
           ),
           Expanded(
-              child: _appStatus != AppStatus.UserFound
-                  ? Container(
-                      child: Status(status: _appStatus),
-                      alignment: Alignment.topCenter,
-                      padding: EdgeInsets.all(24),
-                    )
-                  : CustomScrollView(
-                      scrollDirection: Axis.vertical,
-                      slivers: [
-                        SliverPersistentHeader(
-                          pinned: true,
-                          delegate: UserSliver(_user),
-                        ),
-                        SliverList(
-                          delegate: SliverChildListDelegate(<Widget>[
-                            if (_user != null)
-                              Container(
-                                width: double.infinity,
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      left: 24, top: 24, bottom: 24),
-                                  child: Text(
-                                    'Activities',
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 20,
-                                      fontFamily: 'Tuffy',
-                                    ),
+            child: _appStatus != AppStatus.UserFound
+                ? Container(
+                    child: Status(status: _appStatus),
+                    alignment: Alignment.topCenter,
+                    padding: EdgeInsets.all(24),
+                  )
+                : CustomScrollView(
+                    scrollDirection: Axis.vertical,
+                    slivers: [
+                      SliverPersistentHeader(
+                        pinned: true,
+                        delegate: UserSliver(_user),
+                      ),
+                      SliverList(
+                        delegate: SliverChildListDelegate(<Widget>[
+                          if (_user != null)
+                            Container(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                  left: 24,
+                                  top: 24,
+                                  bottom: 24,
+                                ),
+                                child: Text(
+                                  'Activities',
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                    fontFamily: 'Tuffy',
                                   ),
                                 ),
                               ),
-                            for (var item in _events) eventFromGithub(item)
-                          ]),
-                        )
-                      ],
-                    )),
+                            ),
+                          for (var item in _events) eventFromGithub(item)
+                        ]),
+                      )
+                    ],
+                  ),
+          ),
         ],
       ),
     );

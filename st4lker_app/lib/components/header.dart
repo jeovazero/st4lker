@@ -8,7 +8,7 @@ class Header extends StatelessWidget {
     return Container(
       width: MediaQuery.of(context).size.width,
       child: Padding(
-        padding: EdgeInsets.all(24),
+        padding: EdgeInsets.all(40),
         child: Row(children: [
           Text('St4lker',
               style: TextStyle(

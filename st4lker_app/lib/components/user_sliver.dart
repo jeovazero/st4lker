@@ -29,12 +29,7 @@ class UserSliver extends SliverPersistentHeaderDelegate {
         height: 250,
         width: MediaQuery.of(context).size.width,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.bottomLeft,
-            end: Alignment.topRight,
-            stops: [0, min(0.6, percentage)],
-            colors: [grad1, grad2],
-          ),
+          color: Color.lerp(Colors.blue, Colors.red, percentage)
         ),
         child: Center(
           child: Container(
